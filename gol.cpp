@@ -10,13 +10,26 @@ class GameBoard {
 public:
   //constructor
   GameBoard(int width = 0, int height = 0)
-    : rows(std::vector<int>(height)), columns(std::vector<int>(width)) {};
+    : rows(height), columns(width), _board(width * height) {};
   //defaulted copy constructor
+  GameBoard(const GameBoard& rhs) = default;
   //defaulted destructor
+  ~GameBoard() = default;
   //defaulted copy operator
+  GameBoard& operator=(const GameBoard & rhs) = default;
+
+  void print() {
+    cout << "{";
+    for (int row{0}; row < rows; ++row) {
+      copy(std::begin(_board)+row, std::begin(_board)+row+columns, std::ostream_iterator<int>{cout, ","});
+      cout << endl;
+    }
+    cout << "}" << endl;
+  };
 private:
-  std::vector<int> rows{};
-  std::vector<int> columns{};
+  int rows{};
+  int columns{};
+  std::vector<int> _board{};
 };
 
 int main(int argc, char * argv[]) {
@@ -36,5 +49,8 @@ int main(int argc, char * argv[]) {
 
   //create 5x5 gameboard
   GameBoard board55{5, 5};
+
+  board55.print();
+
   return 0;
 }
