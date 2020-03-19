@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <iterator>
 #include <algorithm>
@@ -11,7 +12,7 @@ using std::cout, std::cerr, std::endl;
 class GameBoard {
 public:
   //constructor
-  GameBoard(int width = 0, int height = 0)
+  GameBoard(int width = 20, int height = 30)
     : rows(height), columns(width), _board(width * height) {randomize_board();};
   //defaulted copy constructor
   GameBoard(const GameBoard& rhs) = default;
@@ -20,19 +21,46 @@ public:
   //defaulted copy operator
   GameBoard& operator=(const GameBoard & rhs) = default;
 
-  void print() {
+  void debug_print() {
+    copy(std::begin(_board), std::end(_board),
+	 std::ostream_iterator<int>{cout, ","});
+    cout << endl;
     if (rows == 0 || columns == 0) { return; } // can't print empty board
     for (int row{0}; row < rows; ++row) {
+      //      cout << " row: " << row << " at address: " << &(*(std::begin(_board)+row*columns)) << " to address: " << &(*(std::begin(_board)+row*columns+columns));
       cout << endl << ((row == 0) ? '{' : ' ');
-      copy(std::begin(_board)+row, std::begin(_board)+row+columns-1,
+      copy(std::begin(_board)+row*columns,
+	   std::begin(_board)+row*columns+columns-1,
 	   std::ostream_iterator<int>{cout, ","});
-      cout << _board.at(row+columns);
+      cout << _board.at(row*columns+columns-1);
     }
     cout << "}" << endl;
+    cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
+    for (int row{0}; row < rows; ++row) {
+      cout << '|';
+      std::transform(std::begin(_board)+row*columns, std::begin(_board)+row*columns+columns,
+		     std::ostream_iterator<char>{cout, ""},
+		     [](int cell) -> char {return (cell == 0) ? ' ' : '#';});
+      cout << '|' << endl;
+    }
+    cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
+  };
+  void print() {
+    cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
+    for (int row{0}; row < rows; ++row) {
+      cout << '|';
+      std::transform(std::begin(_board)+row*columns,
+		     std::begin(_board)+row*columns+columns,
+		     std::ostream_iterator<char>{cout, ""},
+		     [](int cell) -> char {return (cell == 0) ? ' ' : '#';});
+      cout << '|' << endl;
+    }
+    cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
   };
 private:
   void randomize_board() {
     std::random_device rand_dev{};
+    // std::mt19937 gen(1);
     std::mt19937 gen(rand_dev());
     // 0,1 would be cleaner but only 50% would be possible. Could look
     // at distribution other than uniform but good enough for now
@@ -62,13 +90,13 @@ int main(int argc, char * argv[]) {
 	      << "when running me" << std::endl;
   }
 
-  // create 0x0 gameboard
+  // create 20x30 gameboard
   GameBoard board{};
 
   //create 5x5 gameboard
   GameBoard board55{5, 5};
 
-  board55.print();
+  board55.debug_print();
 
   return 0;
 }
