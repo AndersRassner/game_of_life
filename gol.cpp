@@ -19,10 +19,11 @@ public:
   GameBoard& operator=(const GameBoard & rhs) = default;
 
   void print() {
-    cout << "{";
     for (int row{0}; row < rows; ++row) {
-      copy(std::begin(_board)+row, std::begin(_board)+row+columns, std::ostream_iterator<int>{cout, ","});
-      cout << endl;
+      cout << endl << ((row == 0) ? '{' : ' ');
+      copy(std::begin(_board)+row, std::begin(_board)+row+columns-1,
+	   std::ostream_iterator<int>{cout, ","});
+      cout << _board.at(row+columns);
     }
     cout << "}" << endl;
   };
