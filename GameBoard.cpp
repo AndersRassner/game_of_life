@@ -55,3 +55,24 @@ void GameBoard::randomize_board() {
   cout << "board after randomization" << endl;
   print();
 };
+
+GameBoard GameBoard::next_board_state() {
+  cout << "next board is returned" << endl;
+  GameBoard temp_board = *this;
+  GameBoard next_board = temp_board;
+  return next_board;
+};
+
+
+void GameBoard::set_state(std::vector<int> new_state) {
+  if(new_state.size() != rows*columns) {
+    std::cerr << "new state doesn't have the same number "
+	      << "of cells as current state" << endl
+	      << "new state has size "
+	      << new_state.size() << " compared to " << rows*columns
+	      << endl;
+    return;
+  }
+  std::cout << "yo let's say it worked" << endl;
+  return;
+}

@@ -18,7 +18,7 @@ private:
   std::vector<int> _board{};
 
 public:
-  GameBoard(int width = 30, int height = 20)
+  GameBoard(int width = 3, int height = 3)
     : rows(height), columns(width), _board(width * height)
   {randomize_board();};
   GameBoard(const GameBoard& rhs) = default;
@@ -28,6 +28,8 @@ public:
   void randomize_board();
   void print();
   void debug_print();
+  GameBoard next_board_state();
+  void set_state(std::vector<int> new_state);
 };
 
 
