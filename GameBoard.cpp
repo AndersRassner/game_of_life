@@ -63,9 +63,8 @@ GameBoard GameBoard::next_board_state() {
   return next_board;
 };
 
-
 void GameBoard::set_state(std::vector<int> new_state) {
-  if(new_state.size() != rows*columns) {
+  if(new_state.size() != rows*columns) { // this doesn't check rows == new_rows
     std::cerr << "new state doesn't have the same number "
 	      << "of cells as current state" << endl
 	      << "new state has size "
@@ -73,6 +72,6 @@ void GameBoard::set_state(std::vector<int> new_state) {
 	      << endl;
     return;
   }
-  std::cout << "yo let's say it worked" << endl;
+  _board = new_state;
   return;
 }

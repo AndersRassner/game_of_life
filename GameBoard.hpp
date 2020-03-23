@@ -25,11 +25,15 @@ public:
   ~GameBoard() = default;
   GameBoard& operator=(const GameBoard & rhs) = default;
 
+  
   void randomize_board();
   void print();
   void debug_print();
   GameBoard next_board_state();
   void set_state(std::vector<int> new_state);
+
+  //Catch2 functions
+  std::vector<int> get_board() {return _board;};
 };
 
 
