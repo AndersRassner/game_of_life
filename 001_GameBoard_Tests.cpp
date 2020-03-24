@@ -1,23 +1,41 @@
 #include <catch/catch.hpp>
 #include "GameBoard.hpp"
 
-TEST_CASE( "Test that next_board_state sets new state", "[GameBoard]" ) {
+TEST_CASE( "Test that the next_board_state correctly steps to new state",
+	  "[GameBoard]" ) {
   GameBoard board{3, 3};
-  std::vector<int> oneCenteredCellBoard{0,0,0,0,1,0,0,0,0};
-  board.set_state(oneCenteredCellBoard);
-  CHECK( board.get_board() == oneCenteredCellBoard );
-  
-  std::vector<int> faultyOneCenteredCellBoard{0,0,0,0,0,1,0,0,0,0};
-  board.set_state(faultyOneCenteredCellBoard);
-  CHECK( board.get_board() == oneCenteredCellBoard );
-  CHECK( board.get_board() != faultyOneCenteredCellBoard );
-
-  std::vector<int> emptyBoard{0,0,0,0,0,0,0,0,0};
+  std::vector<int> emptyBoard
+    {0,0,0,0,0,0,0,0,0};
+  std::vector<int> oneCenteredCellBoard
+    {0,0,0,0,1,0,0,0,0};
+    
+  SECTION( "live cells with less than 2 neighbours die. Dead cells stay dead") {
   board.set_state(oneCenteredCellBoard);
   board.next_board_state();
-  CHECK( board.get_board() == emptyBoard);
+    CHECK( board.get_board() == emptyBoard);
+  }
+}
+
+TEST_CASE( "Test that set_state sets new state",
+	   "[GameBoard]" ) {
+  GameBoard board{3, 3};
+  std::vector<int> emptyBoard
+    {0,0,0,0,0,0,0,0,0};
+  std::vector<int> oneCenteredCellBoard
+    {0,0,0,0,1,0,0,0,0};
   
-  std::vector<int> tauBoard{1,1,1,1,1,1,1,1,1};
-  board.set_state(tauBoard);
-  CHECK( board.get_board() == tauBoard );
+  board.set_state(oneCenteredCellBoard);
+  
+  SECTION( "setting state of board changes the board") {
+    std::vector<int> tauBoard{1,1,1,1,1,1,1,1,1};
+    board.set_state(tauBoard);
+    CHECK( board.get_board() == tauBoard );
+  }
+  
+  SECTION( "setting state of board incorrectly doesn't change the board") {
+    std::vector<int> faultyOneCenteredCellBoard{0,0,0,0,0,1,0,0,0,0};
+    board.set_state(faultyOneCenteredCellBoard);
+    CHECK( board.get_board() == oneCenteredCellBoard );
+    CHECK( board.get_board() != faultyOneCenteredCellBoard );
+  }
 }
