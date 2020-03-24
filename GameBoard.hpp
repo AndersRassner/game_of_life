@@ -29,7 +29,10 @@ public:
   void randomize_board();
   void print();
   void debug_print();
-  GameBoard next_board_state();
+  int simpleSum(int cell);
+  int complicatedSum(int cell);
+  int sumNeighbours(int cell);
+  void next_board_state();
   void set_state(std::vector<int> new_state);
 
   //Catch2 functions

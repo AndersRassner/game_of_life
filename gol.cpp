@@ -27,13 +27,13 @@ int main(int argc, char * argv[]) {
   // create default gameboard
   GameBoard board{};
   board.print();
-  GameBoard next_board = board.next_board_state();
+  board.next_board_state();
   std::vector<int> test_vector{0,0,0,0,1,0,0,0,0,0};
-  next_board.set_state(test_vector);
-  next_board.print();
+  board.set_state(test_vector);
+  board.print();
   std::vector<int> test_vector2{0,0,0,0,1,0,0,0,0};
-  next_board.set_state(test_vector2);
-  next_board.print();
+  board.set_state(test_vector2);
+  board.print();
   //create 5x5 gameboard
   // GameBoard board55{5, 5};
   // board55.debug_print();
