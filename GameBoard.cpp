@@ -59,6 +59,23 @@ void GameBoard::randomize_board() {
 GameBoard GameBoard::next_board_state() {
   cout << "next board is returned" << endl;
   GameBoard temp_board = *this;
+
+  // TODO: stuff that computes next state here by looking at _board and changing
+  //       temp_board
+  int cell{0};
+  for(int row{0}; row < rows; ++row) {
+    for(int column{0}; column < columns; ++column) {
+      cell += 1;
+      cout << "position of cell " << cell
+	   << ": (" << column << "," << row << ")" << endl;
+      
+    // TODO: Any live cell with 0 or 1 live neighbours dies from underpopulation
+    // TODO: Any live cell with 2 or 3 live neighbours stays alive because goldilocks
+    // TODO: Any live cell with more than 3 live neighbours dies because crowded
+    // TODO: Any dead cell with exactly 3 live neighbours resurrects because ;-*
+
+    }
+  }
   GameBoard next_board = temp_board;
   return next_board;
 };
