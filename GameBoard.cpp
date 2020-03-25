@@ -47,13 +47,9 @@ void GameBoard::randomize_board() {
   // 0,1 would be cleaner but only 50% would be possible. Could look
   // at distribution other than uniform but good enough for now
   std::uniform_int_distribution<> dist(1,10);
-  cout << "board before randomization" << endl;
-  print();
   for( int& cell : _board) {
     cell = (dist(gen) <=5 ) ? 0 : 1;
   }
-  cout << "board after randomization" << endl;
-  print();
 };
 
 void GameBoard::next_board_state() {
@@ -64,8 +60,6 @@ void GameBoard::next_board_state() {
   for(int row{0}; row < rows; ++row) {
     for(int column{0}; column < columns; ++column) {
       cell += 1;
-      cout << "position of cell " << cell
-	   << ": (" << column << "," << row << ")" << endl;
       switch(_board.at(cell)) {
       case 0 : {
 	// TODO: Any dead cell with exactly 3 live neighbours resurrects
@@ -108,19 +102,38 @@ int GameBoard::sumNeighbours(int cell) {
      || cell % columns == 0 // first column
      || cell % columns == decColumns // last column
      || cell >= rows*decColumns ){ // last row
+    cout << "cell " << cell << " is complicated" << endl;
     return complicatedSum(cell);
   }
   else{
+    cout << "cell " << cell << " is simple" << endl;
     return simpleSum(cell);
   }
 };
 int GameBoard::complicatedSum(int cell) {
-  cerr << "i can't sum complicated cells yet." << endl;
-  return 0;
+  int sum = 0 - _board.at(cell); // we will count ourselves
+  if(cell == 0) {
+    sum = std::accumulate(std::begin(_board),
+			  std::begin(_board)+1, sum);
+    cout << "sum is: " << sum << endl;
+    sum = std::accumulate(std::begin(_board)+columns,
+			  std::begin(_board)+columns+1, sum);
+    cout << "sum is: " << sum << endl;
+  }
+  else if(cell == rows*columns-1) {
+    sum = std::accumulate(std::rbegin(_board),
+			  std::rbegin(_board)+1, sum);
+    cout << "cell " << cell <<  endl << "sum is: " << sum << endl;
+    sum = std::accumulate(std::rbegin(_board)+columns,
+			  std::rbegin(_board)+columns+1, sum);
+    cout << "sum is: " << sum << endl;
+  }
+
+  return sum;
 };
 int GameBoard::simpleSum(int cell) {
   int sum = 0 - _board.at(cell); // we will count ourselves
-  cout << "sum is: " << sum << endl;
+  cout  << "sum is: " << sum << endl;
   sum = std::accumulate(std::begin(_board)+cell-columns,
 			std::begin(_board)+cell-columns+3, sum);
   cout << "sum is: " << sum << endl;

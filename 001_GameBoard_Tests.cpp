@@ -8,11 +8,23 @@ TEST_CASE( "Test that the next_board_state correctly steps to new state",
     {0,0,0,0,0,0,0,0,0};
   std::vector<int> oneCenteredCellBoard
     {0,0,0,0,1,0,0,0,0};
+  std::vector<int> oneCornerCellBoard
+    {0,0,0,0,0,0,0,0,1};
+  std::vector<int> twoCornerCellBoard
+    {1,0,0,0,0,0,0,0,1};
     
   SECTION( "live cells with less than 2 neighbours die. Dead cells stay dead") {
   board.set_state(oneCenteredCellBoard);
   board.next_board_state();
-    CHECK( board.get_board() == emptyBoard);
+  CHECK( board.get_board() == emptyBoard);
+  
+  board.set_state(oneCornerCellBoard);
+  board.next_board_state();
+  CHECK( board.get_board() == emptyBoard);
+  
+  board.set_state(twoCornerCellBoard);
+  board.next_board_state();
+  CHECK( board.get_board() == emptyBoard);
   }
 }
 

@@ -12,7 +12,7 @@ test: $(objs)
 	./test
 
 gol: $(objs)
-	$(CXX) $(CXXFLAGS) gol.cpp -o $@
+	$(CXX) $(CXXFLAGS) gol.cpp -o $@  $(gameboard)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@

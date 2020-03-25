@@ -28,11 +28,15 @@ int main(int argc, char * argv[]) {
   GameBoard board{};
   board.print();
   board.next_board_state();
+  board.print();
+  
   std::vector<int> test_vector{0,0,0,0,1,0,0,0,0,0};
   board.set_state(test_vector);
   board.print();
   std::vector<int> test_vector2{0,0,0,0,1,0,0,0,0};
   board.set_state(test_vector2);
+  board.print();
+  board.next_board_state();
   board.print();
   //create 5x5 gameboard
   // GameBoard board55{5, 5};
