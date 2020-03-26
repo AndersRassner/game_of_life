@@ -95,13 +95,13 @@ void GameBoard::next_board_state() {
   return;
 };
 int GameBoard::sumNeighbours(int cell) {
-  int decColumns = columns - 1;
+  const int decColumns = columns - 1;
   // count neighbours of cells around cell. Corner cases include corners (haha)
   // and the outer rows & columns.
   if(cell < decColumns // first row
      || cell % columns == 0 // first column
      || cell % columns == decColumns // last column
-     || cell >= rows*decColumns ){ // last row
+     || cell >= (rows-1)*columns ){ // last row
     cout << "cell " << cell << " is complicated" << endl;
     return complicatedSum(cell);
   }
@@ -112,7 +112,7 @@ int GameBoard::sumNeighbours(int cell) {
 };
 int GameBoard::complicatedSum(int cell) {
   int sum = 0 - _board.at(cell); // we will count ourselves
-  int decColumns = columns - 1;
+  const int decColumns = columns - 1;
   if(cell == 0) {
     cout << "upper left corner" << endl;
     // upper left corner
@@ -131,35 +131,55 @@ int GameBoard::complicatedSum(int cell) {
     cout << "cell " << cell <<  endl << "sum for cell " << cell << " is: " << sum << endl;
     sum = std::accumulate(std::rbegin(_board)+columns,
 			  std::rbegin(_board)+columns+2, sum);
-    cout << "sum for cell " << cell << " is: " << sum << endl;
+    cout << "final sum for cell " << cell << " is: " << sum << endl;
   }
-  else if(cell == columns-1) {
+  else if(cell == decColumns) {
     cout << "upper right corner" << endl;
     // upper right corner
-    sum = std::accumulate(std::begin(_board)+decColumns-1,
-			  std::begin(_board)+decColumns+1, sum);
+    sum = std::accumulate(std::begin(_board)+columns-2,
+			  std::begin(_board)+columns, sum);
     cout << "cell " << cell <<  endl << "sum for cell " << cell << " is: " << sum << endl;
-    sum = std::accumulate(std::begin(_board)+(decColumns*2)-1,
-			  std::begin(_board)+(decColumns*2)+1, sum);
-    cout << "sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::begin(_board)+(columns*2)-2,
+			  std::begin(_board)+(columns*2), sum);
+    cout << "final sum for cell " << cell << " is: " << sum << endl;
   }
-  else if(cell == rows*(columns-1)) {
+  else if(cell == rows*decColumns) {
     cout << "lower left corner" << endl;
     // lower left corner
-    sum = std::accumulate(std::rbegin(_board)+decColumns-1,
-			  std::rbegin(_board)+decColumns+1, sum);
+    sum = std::accumulate(std::rbegin(_board)+columns,
+			  std::rbegin(_board)+columns, sum);
     cout << "cell " << cell <<  endl << "sum for cell " << cell << " is: " << sum << endl;
-    sum = std::accumulate(std::rbegin(_board)+(decColumns*2)-1,
-			  std::rbegin(_board)+(decColumns*2)+1, sum);
-    cout << "sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::rbegin(_board)+(columns*2)-2,
+			  std::rbegin(_board)+(columns*2), sum);
+    cout << "final sum for cell " << cell << " is: " << sum << endl;
   }
-  // TODO: ADD SUM FOR LAST COLUMN, SHOULD PASS TEST
+  else if(cell % columns == decColumns) { // corners already covered
+    cout << "last column" << endl;
+    sum = std::accumulate(std::begin(_board)+cell-columns-1,
+			  std::begin(_board)+cell-columns+1, sum);
+    cout << "cell " << cell <<  endl << "sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::begin(_board)+cell-1,
+			  std::begin(_board)+cell+1, sum);
+    cout  << "sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::begin(_board)+cell+decColumns,
+			  std::begin(_board)+cell+decColumns+2, sum);
+    cout << "final sum for cell " << cell << " is: " << sum << endl;
+  }else if(cell >= (rows-1)*columns){
+    cout << "last row" << endl;    
+    sum = std::accumulate(std::begin(_board)+cell-columns-1,
+			  std::begin(_board)+cell-columns+2, sum);
+    cout << "sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::begin(_board)+cell-1,
+			  std::begin(_board)+cell+2, sum);
+    cout << "final sum for cell " << cell << " is: " << sum << endl;
+  }
+
   
   /* FOR EASIER LOOKUP
   if(cell < decColumns // first row
      || cell % columns == 0 // first column
      || cell % columns == decColumns // last column
-     || cell >= rows*decColumns ){ // last row
+     || cell >= (rows-1)*columns ){ // last row
   */
   cout << "final sum for cell " << cell << " is: " << sum << endl;
   return sum;

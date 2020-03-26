@@ -14,10 +14,10 @@ TEST_CASE( "Test that the next_board_state correctly steps to new state",
     {1,0,0,0,0,0,0,0,1};
   std::vector<int> diagonalBoard
     {1,0,0,0,1,0,0,0,1};
-  std::vector<int> threeCellClusterBoard
-    {0,0,0,0,0,1,0,1,1};
-  std::vector<int> threeCellClusterBoardStepped
-    {0,0,0,0,0,1,0,1,1};
+  std::vector<int> fourCellClusterBoard
+    {0,0,0,0,1,1,0,1,1};
+  std::vector<int> fourCellClusterBoardStepped
+    {0,0,0,0,1,1,0,1,1};
     
   SECTION( "live cells with less than 2 neighbours die. Dead cells stay dead") {
   board.set_state(oneCenteredCellBoard);
@@ -38,10 +38,10 @@ TEST_CASE( "Test that the next_board_state correctly steps to new state",
     board.next_board_state();
     CHECK( board.get_board() == oneCenteredCellBoard);
     
-    board.set_state(threeCellClusterBoard);
+    board.set_state(fourCellClusterBoard);
     board.print();
     board.next_board_state();
-    CHECK( board.get_board() == threeCellClusterBoard);
+    CHECK( board.get_board() == fourCellClusterBoard);
   }
 }
 
