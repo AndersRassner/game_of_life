@@ -56,44 +56,40 @@ void GameBoard::next_board_state() {
   std::vector<int> temp_state = _board;
   // TODO: stuff that computes next state here by looking at _board and changing
   //       temp_state
-  int cell{-1};
-  for(int row{0}; row < rows; ++row) {
-    for(int column{0}; column < columns; ++column) {
-      cell += 1;
-      switch(_board.at(cell)) {
-      case 0 : {
-	// TODO: Any dead cell with exactly 3 live neighbours resurrects
-	if (sumNeighbours(cell) == 3) {
-	  temp_state.at(cell) = 1;
-	}
-	break;
+  for(int cell{0}; cell < _board.size(); ++cell) {
+    switch(_board.at(cell)) {
+    case 0 : {
+      // Any dead cell with exactly 3 live neighbours resurrects
+      if (sumNeighbours(cell) == 3) {
+	temp_state.at(cell) = 1;
       }
-      case 1 : {
-	int neighbours = sumNeighbours(cell);
-	// TODO: Any live cell with 0 or 1 live neighbours dies
-	if (neighbours < 2) {
-	  temp_state.at(cell) = 0;
-	}
-	// TODO: Any live cell with more than 3 live neighbours dies
-	else if(neighbours > 3) {
-	  temp_state.at(cell) = 0;
-	}
-	// TODO: Any live cell with 2 or 3 live neighbours stays alive
-	else {
-	  temp_state.at(cell) = 1;
-	}
-	break;
+      break;
+    }
+    case 1 : {
+      int neighbours = sumNeighbours(cell);
+      // Any live cell with 0 or 1 live neighbours dies
+      if (neighbours < 2) {
+	temp_state.at(cell) = 0;
       }
-      default : {
-	cerr << "A cell should only have a value of 0 or 1" << endl;
+      // Any live cell with more than 3 live neighbours dies
+      else if(neighbours > 3) {
+	temp_state.at(cell) = 0;
       }
+      // Any live cell with 2 or 3 live neighbours stays alive
+      else {
+	temp_state.at(cell) = 1;
       }
-
+      break;
+    }
+    default : {
+      cerr << "A cell should only have a value of 0 or 1" << endl;
+    }
     }
   }
   set_state(temp_state);
   return;
 };
+
 int GameBoard::sumNeighbours(int cell) {
   const int decColumns = columns - 1;
   // count neighbours of cells around cell. Corner cases include corners (haha)
@@ -110,70 +106,71 @@ int GameBoard::sumNeighbours(int cell) {
     return simpleSum(cell);
   }
 };
+
 int GameBoard::complicatedSum(int cell) {
   int sum = 0 - _board.at(cell); // we will count ourselves
   const int decColumns = columns - 1;
   if(cell == 0) {
     cout << "upper left corner" << endl;
     // upper left corner
-    sum = std::accumulate(std::begin(_board),
-			  std::begin(_board)+2, sum);
-    cout << endl << endl << endl << "sum for cell " << cell << " is: " << sum << endl;
-    sum = std::accumulate(std::begin(_board)+columns,
-			  std::begin(_board)+columns+2, sum);
-    cout << "sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::cbegin(_board),
+			  std::cbegin(_board)+2, sum);
+    sum = std::accumulate(std::cbegin(_board)+columns,
+			  std::cbegin(_board)+columns+2, sum);
   }
   else if(cell == rows*columns-1) {
     cout << "lower right corner" << endl;
     // lower right corner
-    sum = std::accumulate(std::rbegin(_board),
-			  std::rbegin(_board)+2, sum);
-    cout << "cell " << cell <<  endl << "sum for cell " << cell << " is: " << sum << endl;
-    sum = std::accumulate(std::rbegin(_board)+columns,
-			  std::rbegin(_board)+columns+2, sum);
-    cout << "final sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::crbegin(_board),
+			  std::crbegin(_board)+2, sum);
+    sum = std::accumulate(std::crbegin(_board)+columns,
+			  std::crbegin(_board)+columns+2, sum);
   }
   else if(cell == decColumns) {
     cout << "upper right corner" << endl;
     // upper right corner
-    sum = std::accumulate(std::begin(_board)+columns-2,
-			  std::begin(_board)+columns, sum);
-    cout << "cell " << cell <<  endl << "sum for cell " << cell << " is: " << sum << endl;
-    sum = std::accumulate(std::begin(_board)+(columns*2)-2,
-			  std::begin(_board)+(columns*2), sum);
-    cout << "final sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::cbegin(_board)+columns-2,
+			  std::cbegin(_board)+columns, sum);
+    sum = std::accumulate(std::cbegin(_board)+(columns*2)-2,
+			  std::cbegin(_board)+(columns*2), sum);
   }
   else if(cell == rows*decColumns) {
     cout << "lower left corner" << endl;
     // lower left corner
-    sum = std::accumulate(std::rbegin(_board)+columns,
-			  std::rbegin(_board)+columns, sum);
-    cout << "cell " << cell <<  endl << "sum for cell " << cell << " is: " << sum << endl;
-    sum = std::accumulate(std::rbegin(_board)+(columns*2)-2,
-			  std::rbegin(_board)+(columns*2), sum);
-    cout << "final sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::crbegin(_board)+columns-2,
+			  std::crbegin(_board)+columns, sum);
+    sum = std::accumulate(std::crbegin(_board)+(columns*2)-2,
+			  std::crbegin(_board)+(columns*2), sum);
   }
   else if(cell % columns == decColumns) { // corners already covered
     cout << "last column" << endl;
-    sum = std::accumulate(std::begin(_board)+cell-columns-1,
-			  std::begin(_board)+cell-columns+1, sum);
-    cout << "cell " << cell <<  endl << "sum for cell " << cell << " is: " << sum << endl;
-    sum = std::accumulate(std::begin(_board)+cell-1,
-			  std::begin(_board)+cell+1, sum);
-    cout  << "sum for cell " << cell << " is: " << sum << endl;
-    sum = std::accumulate(std::begin(_board)+cell+decColumns,
-			  std::begin(_board)+cell+decColumns+2, sum);
-    cout << "final sum for cell " << cell << " is: " << sum << endl;
+    sum = std::accumulate(std::cbegin(_board)+cell-columns-1,
+			  std::cbegin(_board)+cell-columns+1, sum);
+    sum = std::accumulate(std::cbegin(_board)+cell-1,
+			  std::cbegin(_board)+cell+1, sum);
+    sum = std::accumulate(std::cbegin(_board)+cell+decColumns,
+			  std::cbegin(_board)+cell+decColumns+2, sum);
   }else if(cell >= (rows-1)*columns){
-    cout << "last row" << endl;    
-    sum = std::accumulate(std::begin(_board)+cell-columns-1,
-			  std::begin(_board)+cell-columns+2, sum);
-    cout << "sum for cell " << cell << " is: " << sum << endl;
-    sum = std::accumulate(std::begin(_board)+cell-1,
-			  std::begin(_board)+cell+2, sum);
-    cout << "final sum for cell " << cell << " is: " << sum << endl;
+    cout << "last row" << endl;
+    sum = std::accumulate(std::cbegin(_board)+cell-columns-1,
+			  std::cbegin(_board)+cell-columns+2, sum);
+    sum = std::accumulate(std::cbegin(_board)+cell-1,
+			  std::cbegin(_board)+cell+2, sum);
+  }else if(cell % columns == 0) {
+    cout << "first column" << endl;
+    sum = std::accumulate(std::cbegin(_board)+cell-columns,
+			  std::cbegin(_board)+cell-columns+2, sum);
+    sum = std::accumulate(std::cbegin(_board)+cell,
+			  std::cbegin(_board)+cell+2, sum);
+    sum = std::accumulate(std::cbegin(_board)+cell+columns,
+			  std::cbegin(_board)+cell+columns+2, sum);
+  }else if(cell < columns){
+    cout << "first row" << endl;
+    sum = std::accumulate(std::cbegin(_board)+cell-1,
+			  std::cbegin(_board)+cell+2, sum);
+    sum = std::accumulate(std::cbegin(_board)+cell+decColumns,
+			  std::cbegin(_board)+cell+decColumns+3, sum);
   }
-
   
   /* FOR EASIER LOOKUP
   if(cell < decColumns // first row
@@ -186,15 +183,12 @@ int GameBoard::complicatedSum(int cell) {
 };
 int GameBoard::simpleSum(int cell) {
   int sum = 0 - _board.at(cell); // we will count ourselves
-  cout  << "sum for cell " << cell << " is: " << sum << endl;
-  sum = std::accumulate(std::begin(_board)+cell-columns-1,
-			std::begin(_board)+cell-columns+2, sum);
-  cout << "sum for cell " << cell << " is: " << sum << endl;
-  sum = std::accumulate(std::begin(_board)+cell-1,
-			std::begin(_board)+cell+2, sum);
-  cout << "sum for cell " << cell << " is: " << sum << endl;
-  sum = std::accumulate(std::begin(_board)+cell+columns-1,
-			std::begin(_board)+cell+columns+2, sum);
+  sum = std::accumulate(std::cbegin(_board)+cell-columns-1,
+			std::cbegin(_board)+cell-columns+2, sum);
+  sum = std::accumulate(std::cbegin(_board)+cell-1,
+			std::cbegin(_board)+cell+2, sum);
+  sum = std::accumulate(std::cbegin(_board)+cell+columns-1,
+			std::cbegin(_board)+cell+columns+2, sum);
   cout << "final sum for cell " << cell << " is: " << sum << endl;
   return sum;
 };
