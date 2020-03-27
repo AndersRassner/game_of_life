@@ -1,6 +1,100 @@
 #include <catch/catch.hpp>
 #include "GameBoard.hpp"
 
+TEST_CASE( "Test that the next_board_state for known patterns correctly flips between known states",
+	   "[GameBoard]" ) {
+  GameBoard board{6, 6};
+
+  SECTION("toad steps back and forth correctly") {
+    std::vector<int> toad
+      {0,0,0,0,0,0,
+       0,0,0,0,0,0,
+       0,0,1,1,1,0,
+       0,1,1,1,0,0,
+       0,0,0,0,0,0,
+       0,0,0,0,0,0,
+      };
+    std::vector<int> toadStepped
+      {0,0,0,0,0,0,
+       0,0,0,1,0,0,
+       0,1,0,0,1,0,
+       0,1,0,0,1,0,
+       0,0,1,0,0,0,
+       0,0,0,0,0,0,
+      };
+
+    board.set_state(toad);
+    board.next_board_state();
+    CHECK( board.get_board() == toadStepped );
+    board.next_board_state();
+    CHECK( board.get_board() == toad );
+  };
+  SECTION( "blinker blinks correctly" ) {
+    std::vector<int> blinker
+      {0,0,0,0,0,0,
+       0,1,1,0,0,0,
+       0,1,1,0,0,0,
+       0,0,0,1,1,0,
+       0,0,0,1,1,0,
+       0,0,0,0,0,0,
+      };
+    std::vector<int> blinkerStepped
+      {0,0,0,0,0,0,
+       0,1,1,0,0,0,
+       0,1,0,0,0,0,
+       0,0,0,0,1,0,
+       0,0,0,1,1,0,
+       0,0,0,0,0,0,
+      };
+    board.set_state(blinker);
+    board.next_board_state();
+    CHECK( board.get_board() == blinkerStepped );
+    board.next_board_state();
+    CHECK( board.get_board() == blinker );
+    
+  };
+  SECTION( "glider glides correctly" ) {
+    std::vector<int> glider
+      {0,0,0,0,0,0,
+       0,0,1,0,0,0,
+       0,0,0,1,0,0,
+       0,1,1,1,0,0,
+       0,0,0,0,0,0,
+       0,0,0,0,0,0,
+      };
+    std::vector<int> gliderStepped
+      {0,0,0,0,0,0,
+       0,0,0,0,0,0,
+       0,1,0,1,0,0,
+       0,0,1,1,0,0,
+       0,0,1,0,0,0,
+       0,0,0,0,0,0,
+      };
+    std::vector<int> gliderStepped2
+      {0,0,0,0,0,0,
+       0,0,0,0,0,0,
+       0,0,0,1,0,0,
+       0,1,0,1,0,0,
+       0,0,1,1,0,0,
+       0,0,0,0,0,0,
+      };
+    std::vector<int> newglider
+      {0,0,0,0,0,0,
+       0,0,0,0,0,0,
+       0,0,1,0,0,0,
+       0,0,0,1,1,0,
+       0,0,1,1,0,0,
+       0,0,0,0,0,0,
+      };
+    board.set_state(glider);
+    board.next_board_state();
+    CHECK( board.get_board() == gliderStepped );
+    board.next_board_state();
+    CHECK( board.get_board() == gliderStepped2 );
+    board.next_board_state();
+    CHECK( board.get_board() == newglider );
+  };
+}
 TEST_CASE( "Test that the next_board_state correctly steps to new state for 5x7 board",
 	   "[GameBoard]" ) {
   GameBoard board{5, 7};
