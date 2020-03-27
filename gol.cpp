@@ -34,10 +34,10 @@ int main(int argc, char * argv[]) {
   board120.print();
   auto start = std::chrono::system_clock::now();
   while(board120.getNoCells() > 0
-	&& std::chrono::system_clock::now() < (start+30s)) {
+	&& std::chrono::system_clock::now() < (start+10s)) {
     board120.next_board_state();
     board120.print();
-    std::this_thread::sleep_for(500ms);
+    std::this_thread::sleep_for(25ms);
   }
   
   return 0;

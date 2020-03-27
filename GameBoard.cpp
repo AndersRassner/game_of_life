@@ -2,41 +2,15 @@
 
 using std::cout, std::cerr, std::endl;
 
-
-void GameBoard::debug_print() {
-  copy(std::begin(_board), std::end(_board),
-       std::ostream_iterator<int>{cout, ","});
-  cout << endl;
-  if (rows == 0 || columns == 0) { return; } // can't print empty board
-  for (int row{0}; row < rows; ++row) {
-    // cout << " row: " << row << " at address: " << &(*(std::begin(_board)+row*columns)) << " to address: " << &(*(std::begin(_board)+row*columns+columns));
-    cout << endl << ((row == 0) ? '{' : ' ');
-    copy(std::begin(_board)+row*columns,
-	 std::begin(_board)+row*columns+columns-1,
-	 std::ostream_iterator<int>{cout, ","});
-    cout << _board.at(row*columns+columns-1);
-  }
-  cout << "}" << endl;
-  cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
-  for (int row{0}; row < rows; ++row) {
-    cout << '|';
-    std::transform(std::begin(_board)+row*columns, std::begin(_board)+row*columns+columns,
-		   std::ostream_iterator<char>{cout, ""},
-		   [](int cell) -> char {return (cell == 0) ? ' ' : '#';});
-    cout << '|' << endl;
-  }
-  cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
-};
-
 void GameBoard::print() {
-  cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
+  cout << std::setfill('-') << std::setw(columns+2) << "-" << '\n';
   for (int row{0}; row < rows; ++row) {
     cout << '|';
     std::transform(std::begin(_board)+row*columns,
 		   std::begin(_board)+row*columns+columns,
 		   std::ostream_iterator<char>{cout, ""},
 		   [](int cell) -> char {return (cell == 0) ? ' ' : '#';});
-    cout << '|' << endl;
+    cout << '|' << '\n';
   }
   cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
 };
@@ -54,8 +28,6 @@ void GameBoard::randomize_board() {
 
 void GameBoard::next_board_state() {
   std::vector<int> temp_state = _board;
-  // TODO: stuff that computes next state here by looking at _board and changing
-  //       temp_state
   for(int cell{0}; cell < _board.size(); ++cell) {
     switch(_board.at(cell)) {
     case 0 : {
@@ -98,11 +70,9 @@ int GameBoard::sumNeighbours(int cell) {
      || cell % columns == 0 // first column
      || cell % columns == decColumns // last column
      || cell >= (rows-1)*columns ){ // last row
-    cout << "cell " << cell << " is complicated" << endl;
     return complicatedSum(cell);
   }
   else{
-    cout << "cell " << cell << " is simple" << endl;
     return simpleSum(cell);
   }
 };
@@ -111,7 +81,6 @@ int GameBoard::complicatedSum(int cell) {
   int sum = 0 - _board.at(cell); // we will count ourselves
   const int decColumns = columns - 1;
   if(cell == 0) {
-    cout << "upper left corner" << endl;
     // upper left corner
     sum = std::accumulate(std::cbegin(_board),
 			  std::cbegin(_board)+2, sum);
@@ -119,7 +88,6 @@ int GameBoard::complicatedSum(int cell) {
 			  std::cbegin(_board)+columns+2, sum);
   }
   else if(cell == rows*columns-1) {
-    cout << "lower right corner" << endl;
     // lower right corner
     sum = std::accumulate(std::crbegin(_board),
 			  std::crbegin(_board)+2, sum);
@@ -127,7 +95,6 @@ int GameBoard::complicatedSum(int cell) {
 			  std::crbegin(_board)+columns+2, sum);
   }
   else if(cell == decColumns) {
-    cout << "upper right corner" << endl;
     // upper right corner
     sum = std::accumulate(std::cbegin(_board)+columns-2,
 			  std::cbegin(_board)+columns, sum);
@@ -135,7 +102,6 @@ int GameBoard::complicatedSum(int cell) {
 			  std::cbegin(_board)+(columns*2), sum);
   }
   else if(cell == rows*decColumns) {
-    cout << "lower left corner" << endl;
     // lower left corner
     sum = std::accumulate(std::crbegin(_board)+columns-2,
 			  std::crbegin(_board)+columns, sum);
@@ -143,7 +109,6 @@ int GameBoard::complicatedSum(int cell) {
 			  std::crbegin(_board)+(columns*2), sum);
   }
   else if(cell % columns == decColumns) { // corners already covered
-    cout << "last column" << endl;
     sum = std::accumulate(std::cbegin(_board)+cell-columns-1,
 			  std::cbegin(_board)+cell-columns+1, sum);
     sum = std::accumulate(std::cbegin(_board)+cell-1,
@@ -151,13 +116,11 @@ int GameBoard::complicatedSum(int cell) {
     sum = std::accumulate(std::cbegin(_board)+cell+decColumns,
 			  std::cbegin(_board)+cell+decColumns+2, sum);
   }else if(cell >= (rows-1)*columns){
-    cout << "last row" << endl;
     sum = std::accumulate(std::cbegin(_board)+cell-columns-1,
 			  std::cbegin(_board)+cell-columns+2, sum);
     sum = std::accumulate(std::cbegin(_board)+cell-1,
 			  std::cbegin(_board)+cell+2, sum);
   }else if(cell % columns == 0) {
-    cout << "first column" << endl;
     sum = std::accumulate(std::cbegin(_board)+cell-columns,
 			  std::cbegin(_board)+cell-columns+2, sum);
     sum = std::accumulate(std::cbegin(_board)+cell,
@@ -165,20 +128,12 @@ int GameBoard::complicatedSum(int cell) {
     sum = std::accumulate(std::cbegin(_board)+cell+columns,
 			  std::cbegin(_board)+cell+columns+2, sum);
   }else if(cell < columns){
-    cout << "first row" << endl;
     sum = std::accumulate(std::cbegin(_board)+cell-1,
 			  std::cbegin(_board)+cell+2, sum);
     sum = std::accumulate(std::cbegin(_board)+cell+decColumns,
 			  std::cbegin(_board)+cell+decColumns+3, sum);
   }
   
-  /* FOR EASIER LOOKUP
-     if(cell < decColumns // first row
-     || cell % columns == 0 // first column
-     || cell % columns == decColumns // last column
-     || cell >= (rows-1)*columns ){ // last row
-  */
-  cout << "final sum for cell " << cell << " is: " << sum << endl;
   return sum;
 };
 int GameBoard::simpleSum(int cell) {
@@ -189,7 +144,6 @@ int GameBoard::simpleSum(int cell) {
 			std::cbegin(_board)+cell+2, sum);
   sum = std::accumulate(std::cbegin(_board)+cell+columns-1,
 			std::cbegin(_board)+cell+columns+2, sum);
-  cout << "final sum for cell " << cell << " is: " << sum << endl;
   return sum;
 };
 

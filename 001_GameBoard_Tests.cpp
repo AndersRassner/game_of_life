@@ -90,11 +90,9 @@ TEST_CASE( "Test that the next_board_state correctly steps to new state for 5x7 
 
   SECTION( "Any live cell with 2 or 3 live neighbours stays alive" ) {
     board.set_state(fourCellClusterBoard);
-    board.print();
     board.next_board_state();
     CHECK( board.get_board() == fourCellClusterBoard);
     board.set_state(fourCellClusterBoard2);
-    board.print();
     board.next_board_state();
     CHECK( board.get_board() == fourCellClusterBoard2);
   }
@@ -139,11 +137,9 @@ TEST_CASE( "Test that the next_board_state correctly steps to new state for 3x3 
     CHECK( board.get_board() == oneCenteredCellBoard);
 
     board.set_state(fourCellClusterBoard);
-    board.print();
     board.next_board_state();
     CHECK( board.get_board() == fourCellClusterBoard);
     board.set_state(fourCellClusterBoard2);
-    board.print();
     board.next_board_state();
     CHECK( board.get_board() == fourCellClusterBoard2);
   }
