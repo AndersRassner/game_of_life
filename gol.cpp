@@ -1,3 +1,4 @@
+// TODO: run sort on this once the internet returns
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -6,13 +7,13 @@
 #include <string>
 #include <random>
 #include "GameBoard.hpp"
+#include <chrono>
+#include <thread>
+
 using std::cout, std::cerr, std::endl;
 
-/********************************\
-|     ADD TESTING YO!            |
-\********************************/
-
 int main(int argc, char * argv[]) {
+  using namespace std::chrono_literals;
   int expectedArguments{1};
   cout << "argc: " << argc << endl;
   for(int i{0}; i < argc ; ++i) {
@@ -30,14 +31,15 @@ int main(int argc, char * argv[]) {
   board.next_board_state();
   board.print();
 
-  std::vector<int> test_vector2{0,0,0,0,1,0,0,0,0};
-  board.set_state(test_vector2);
-  board.print();
-  board.next_board_state();
-  board.print();
-  //create 5x5 gameboard
-  // GameBoard board55{5, 5};
-  // board55.debug_print();
-
+  GameBoard board120{30, 40};
+  board120.print();
+  auto start = std::chrono::system_clock::now();
+  while(board120.getNoCells() > 0
+	&& std::chrono::system_clock::now() < (start+30s)) {
+    board120.next_board_state();
+    board120.print();
+    std::this_thread::sleep_for(500ms);
+  }
+  
   return 0;
 }

@@ -173,7 +173,7 @@ int GameBoard::complicatedSum(int cell) {
   }
   
   /* FOR EASIER LOOKUP
-  if(cell < decColumns // first row
+     if(cell < decColumns // first row
      || cell % columns == 0 // first column
      || cell % columns == decColumns // last column
      || cell >= (rows-1)*columns ){ // last row
@@ -204,4 +204,8 @@ void GameBoard::set_state(std::vector<int> new_state) {
   }
   _board = new_state;
   return;
-}
+};
+
+int GameBoard::getNoCells() {
+return std::accumulate(std::cbegin(_board), std::cend(_board), 0);
+};

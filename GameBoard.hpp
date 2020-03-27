@@ -34,6 +34,7 @@ public:
   int sumNeighbours(int cell);
   void next_board_state();
   void set_state(std::vector<int> new_state);
+  int getNoCells();
 
   //Catch2 functions
   std::vector<int> get_board() {return _board;};
