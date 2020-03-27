@@ -1,13 +1,13 @@
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <iterator>
 #include <algorithm>
-#include <string>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
 #include <random>
+#include <string>
+#include <vector>
 
 
 class GameBoard {

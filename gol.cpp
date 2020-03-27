@@ -1,14 +1,13 @@
-// TODO: run sort on this once the internet returns
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <iterator>
-#include <algorithm>
-#include <string>
-#include <random>
 #include "GameBoard.hpp"
+#include <algorithm>
 #include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
+#include <random>
+#include <string>
 #include <thread>
+#include <vector>
 
 using std::cout, std::cerr, std::endl;
 
