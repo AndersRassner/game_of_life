@@ -34,6 +34,5 @@ gol
 test
 
 # Emacs autosaves
-*.cpp~
-*.hpp~
+*.*~
 Makefile~
