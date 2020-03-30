@@ -34,8 +34,8 @@ int main(int argc, char * argv[]) {
     std::ifstream ifs(argv[1]);
     int rows {0};
     int columns {0};
-    ifs >> rows;
     ifs >> columns;
+    ifs >> rows;
     GameBoard board{columns, rows};
     std::vector<int> stateFromFile{};
     int x{0}; // TODO: replace with algorithm
@@ -45,7 +45,10 @@ int main(int argc, char * argv[]) {
     }
     auto start = std::chrono::system_clock::now();
     board.set_state(stateFromFile);
-    while(std::chrono::system_clock::now() < (start+10s)) {
+    board.next_board_state();
+    board.print();
+    // std::this_thread::sleep_for(2s);
+    while(std::chrono::system_clock::now() < (start+7s)) {
       board.next_board_state();
       board.print();
       std::this_thread::sleep_for(100ms);
