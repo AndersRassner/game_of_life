@@ -48,7 +48,7 @@ int main(int argc, char * argv[]) {
     board.next_board_state();
     board.print();
     // std::this_thread::sleep_for(2s);
-    while(std::chrono::system_clock::now() < (start+7s)) {
+    while(std::chrono::system_clock::now() < (start+8s)) {
       board.next_board_state();
       board.print();
       std::this_thread::sleep_for(100ms);
