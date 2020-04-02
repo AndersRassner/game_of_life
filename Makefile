@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -Wfatal-errors -Wall -Wextra
-CXXFLAGS := '-std=c++17' $(CXX_FLAGS)
+CXXFLAGS := '-std=c++17' $(CXXFLAGS)
 srcs = $(wildcard *.cpp)
 tests = $(wildcard *Tests.cpp)
 gameboard = GameBoard.o

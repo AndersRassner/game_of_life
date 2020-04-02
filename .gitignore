@@ -36,3 +36,6 @@ test
 # Emacs autosaves
 *.*~
 Makefile~
+
+# emacs TAGS
+TAGS

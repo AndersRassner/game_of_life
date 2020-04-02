@@ -31,16 +31,15 @@ int main(int argc, char * argv[]) {
     }
   }
   else if(argc == 2) { // create board from file
-    std::ifstream ifs(argv[1]);
+    std::ifstream ifs(argv[1]); // TODO: make sure this actually worked.
     int rows {0};
     int columns {0};
     ifs >> columns;
     ifs >> rows;
     GameBoard board{columns, rows};
     std::vector<int> stateFromFile{};
-    int x{0}; // TODO: replace with algorithm
+    int x{0}; // TODO: replace with algorithm (copy to back-inserter or something)
     while(ifs >> x) {
-      cout << "read: " << x << endl;
       stateFromFile.push_back(x);
     }
     auto start = std::chrono::system_clock::now();
@@ -54,8 +53,6 @@ int main(int argc, char * argv[]) {
       std::this_thread::sleep_for(100ms);
     }
   }
-
-
 
   return 0;
 }
