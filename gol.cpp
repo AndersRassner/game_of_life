@@ -45,6 +45,7 @@ int main(int argc, char * argv[]) {
     std::copy(std::istream_iterator<int>(ifs),
               std::istream_iterator<int>(),
               std::back_inserter(stateFromFile));
+
     auto start = std::chrono::system_clock::now();
     board.set_state(stateFromFile);
     board.next_board_state();

@@ -13,6 +13,7 @@ void GameBoard::print() {
   }
   cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
 };
+
 void GameBoard::randomize_board() {
   std::random_device rand_dev{};
   // std::mt19937 gen(1);
