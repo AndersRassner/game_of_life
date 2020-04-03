@@ -1,15 +1,14 @@
 #include "GameBoard.hpp"
-
 using std::cout, std::cerr, std::endl;
 
 void GameBoard::print() {
   cout << std::setfill('-') << std::setw(columns+2) << "-" << '\n';
-  for (int row{0}; row < rows; ++row) {
+  for (unsigned int row{0}; row < rows; ++row) {
     cout << '|';
     std::transform(std::begin(_board)+row*columns,
 		   std::begin(_board)+row*columns+columns,
 		   std::ostream_iterator<char>{cout, ""},
-		   [](int cell) -> char {return (cell == 0) ? ' ' : '#';});
+		   [](unsigned int cell) -> char {return (cell == 0) ? ' ' : '#';});
     cout << '|' << '\n';
   }
   cout << std::setfill('-') << std::setw(columns+2) << "-" << endl;
@@ -26,14 +25,30 @@ void GameBoard::randomize_board() {
   }
 };
 
+void GameBoard::set_state(std::vector<int> new_state) {
+  if(new_state.size() != rows*columns) { // this doesn't check rows == new_rows
+    std::cerr << "new state doesn't have the same number "
+	      << "of cells as current state" << endl
+	      << "new state has size "
+	      << new_state.size() << " compared to " << rows*columns
+	      << endl;
+    return;
+  }
+  _board = new_state;
+  return;
+};
+
+int GameBoard::getNoCells() {
+return std::accumulate(std::cbegin(_board), std::cend(_board), 0);
+};
+
 void GameBoard::next_board_state() {
   std::vector<int> temp_state = _board;
-  for(int cell{0}; cell < _board.size(); ++cell) {
+  for(unsigned int cell{0}; cell < _board.size(); ++cell) {
     switch(_board.at(cell)) {
     case 0 : {
-      // Any dead cell with exactly 3 live neighbours resurrects
-      if (sumNeighbours(cell) == 3) {
-	temp_state.at(cell) = 1;
+      if (sumNeighbours(cell) == 3) { // Any dead cell with exactly 3 live neighbours resurrects
+	      temp_state.at(cell) = 1;
       }
       break;
     }
@@ -62,8 +77,8 @@ void GameBoard::next_board_state() {
   return;
 };
 
-int GameBoard::sumNeighbours(int cell) {
-  const int decColumns = columns - 1;
+int GameBoard::sumNeighbours(unsigned int cell) {
+  const unsigned int decColumns = columns - 1;
   // count neighbours of cells around cell. Corner cases include corners (haha)
   // and the outer rows & columns.
   if(cell < decColumns // first row
@@ -77,9 +92,24 @@ int GameBoard::sumNeighbours(int cell) {
   }
 };
 
-int GameBoard::complicatedSum(int cell) {
+int GameBoard::complicatedSum(const unsigned int cell) {
   int sum = 0 - _board.at(cell); // we will count ourselves
-  const int decColumns = columns - 1;
+  const unsigned int decColumns = columns - 1; // if columns is 0 then cell will always be 0
+  if( cell == 0 || cell == rows*columns-1 || cell == decColumns || cell == rows*decColumns) {
+    sum = cornerSum(cell);
+  }
+  else{ // only end up here if cell is on a border
+    sum = borderSum(cell);
+  }
+  
+  
+  return sum;
+};
+
+int GameBoard::cornerSum(const unsigned int cell) {
+  const unsigned int decColumns = columns - 1;
+  int sum = 0 - _board.at(cell);
+
   if(cell == 0) {
     // upper left corner
     sum = std::accumulate(std::cbegin(_board),
@@ -108,7 +138,14 @@ int GameBoard::complicatedSum(int cell) {
     sum = std::accumulate(std::crbegin(_board)+(columns*2)-2,
 			  std::crbegin(_board)+(columns*2), sum);
   }
-  else if(cell % columns == decColumns) { // corners already covered
+  return sum;
+};
+
+int GameBoard::borderSum(const unsigned int cell) {
+  const unsigned int decColumns = columns - 1;
+  int sum = 0 - _board.at(cell);
+
+  if(cell % columns == decColumns) {
     sum = std::accumulate(std::cbegin(_board)+cell-columns-1,
 			  std::cbegin(_board)+cell-columns+1, sum);
     sum = std::accumulate(std::cbegin(_board)+cell-1,
@@ -127,16 +164,16 @@ int GameBoard::complicatedSum(int cell) {
 			  std::cbegin(_board)+cell+2, sum);
     sum = std::accumulate(std::cbegin(_board)+cell+columns,
 			  std::cbegin(_board)+cell+columns+2, sum);
-  }else if(cell < columns){
+  }else if(cell < columns) {
     sum = std::accumulate(std::cbegin(_board)+cell-1,
 			  std::cbegin(_board)+cell+2, sum);
     sum = std::accumulate(std::cbegin(_board)+cell+decColumns,
 			  std::cbegin(_board)+cell+decColumns+3, sum);
   }
-  
   return sum;
 };
-int GameBoard::simpleSum(int cell) {
+
+int GameBoard::simpleSum(const unsigned int cell) {
   int sum = 0 - _board.at(cell); // we will count ourselves
   sum = std::accumulate(std::cbegin(_board)+cell-columns-1,
 			std::cbegin(_board)+cell-columns+2, sum);
@@ -145,21 +182,4 @@ int GameBoard::simpleSum(int cell) {
   sum = std::accumulate(std::cbegin(_board)+cell+columns-1,
 			std::cbegin(_board)+cell+columns+2, sum);
   return sum;
-};
-
-void GameBoard::set_state(std::vector<int> new_state) {
-  if(new_state.size() != rows*columns) { // this doesn't check rows == new_rows
-    std::cerr << "new state doesn't have the same number "
-	      << "of cells as current state" << endl
-	      << "new state has size "
-	      << new_state.size() << " compared to " << rows*columns
-	      << endl;
-    return;
-  }
-  _board = new_state;
-  return;
-};
-
-int GameBoard::getNoCells() {
-return std::accumulate(std::cbegin(_board), std::cend(_board), 0);
 };

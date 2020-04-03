@@ -32,8 +32,8 @@ int main(int argc, char * argv[]) {
   }
   else if(argc == 2) { // create board from file
     std::ifstream ifs(argv[1]); // TODO: make sure this actually worked.
-    int rows {0};
-    int columns {0};
+    unsigned int rows {0};
+    unsigned int columns {0};
     ifs >> columns;
     ifs >> rows;
     GameBoard board{columns, rows};

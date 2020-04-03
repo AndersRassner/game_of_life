@@ -13,12 +13,14 @@
 class GameBoard {
 
 private:
-  int rows{};
-  int columns{};
+  unsigned int rows{};
+  unsigned int columns{};
   std::vector<int> _board{};
+  int cornerSum(const unsigned int cell);
+  int borderSum(const unsigned int cell);
 
 public:
-  GameBoard(int width = 3, int height = 3)
+  GameBoard(unsigned int width = 3, unsigned int height = 3)
     : rows(height), columns(width), _board(width * height)
   {randomize_board();};
   GameBoard(const GameBoard& rhs) = default;
@@ -29,9 +31,9 @@ public:
   void randomize_board();
   void print();
   void debug_print();
-  int simpleSum(int cell);
-  int complicatedSum(int cell);
-  int sumNeighbours(int cell);
+  int simpleSum(const unsigned int cell);
+  int complicatedSum(const unsigned int cell);
+  int sumNeighbours(unsigned int cell);
   void next_board_state();
   void set_state(std::vector<int> new_state);
   int getNoCells();
