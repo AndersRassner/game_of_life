@@ -17,13 +17,10 @@ void GameBoard::print() {
 
 void GameBoard::randomize_board() {
   std::random_device rand_dev{};
-  // std::mt19937 gen(1);
   std::mt19937 gen(rand_dev());
-  // 0,1 would be cleaner but only 50% would be possible. Could look
-  // at distribution other than uniform but good enough for now
-  std::uniform_int_distribution<> dist(1, 10);
+  std::bernoulli_distribution dist(0.5);
   for (int &cell : _board) {
-    cell = (dist(gen) <= 5) ? 0 : 1;
+    cell = (dist(gen)) ? 0 : 1;
   }
 };
 
@@ -33,7 +30,7 @@ void GameBoard::set_state(std::vector<int> new_state) {
     std::cerr << "new state doesn't have the same number "
               << "of cells as current state" << endl
               << "new state has size " << new_state.size() << " compared to "
-              << rows * columns << endl;
+              << _board.size() << endl;
     return;
   }
   _board = new_state;
@@ -49,8 +46,8 @@ void GameBoard::next_board_state() {
   for (unsigned int cell{0}; cell < _board.size(); ++cell) {
     switch (_board.at(cell)) {
     case 0: {
-      if (sumNeighbours(cell) ==
-          3) { // Any dead cell with exactly 3 live neighbours resurrects
+      // Any dead cell with exactly 3 live neighbours resurrects
+      if (sumNeighbours(cell) == 3) {
         temp_state.at(cell) = 1;
       }
       break;
@@ -94,12 +91,12 @@ int GameBoard::sumNeighbours(unsigned int cell) {
 
 int GameBoard::complicatedSum(const unsigned int cell) {
   int sum = 0 - _board.at(cell); // we will count ourselves
-  const unsigned int decColumns =
-      columns - 1; // if columns is 0 then cell will always be 0
+  const unsigned int decColumns = columns - 1;
+
   if (cell == 0 || cell == rows * columns - 1 || cell == decColumns ||
       cell == rows * decColumns) {
     sum = cornerSum(cell);
-  } else { // only end up here if cell is on a border
+  } else {
     sum = borderSum(cell);
   }
 
@@ -108,7 +105,7 @@ int GameBoard::complicatedSum(const unsigned int cell) {
 
 int GameBoard::cornerSum(const unsigned int cell) {
   const unsigned int decColumns = columns - 1;
-  int sum = 0 - _board.at(cell);
+  int sum = 0 - _board.at(cell); // we will count ourselves
 
   if (cell == 0) {
     // upper left corner
@@ -138,9 +135,10 @@ int GameBoard::cornerSum(const unsigned int cell) {
 
 int GameBoard::borderSum(const unsigned int cell) {
   const unsigned int decColumns = columns - 1;
-  int sum = 0 - _board.at(cell);
+  int sum = 0 - _board.at(cell); // we will count ourselves
 
   if (cell % columns == decColumns) {
+    // right border
     sum = std::accumulate(std::cbegin(_board) + cell - columns - 1,
                           std::cbegin(_board) + cell - columns + 1, sum);
     sum = std::accumulate(std::cbegin(_board) + cell - 1,
@@ -148,11 +146,13 @@ int GameBoard::borderSum(const unsigned int cell) {
     sum = std::accumulate(std::cbegin(_board) + cell + decColumns,
                           std::cbegin(_board) + cell + decColumns + 2, sum);
   } else if (cell >= (rows - 1) * columns) {
+    // lower border
     sum = std::accumulate(std::cbegin(_board) + cell - columns - 1,
                           std::cbegin(_board) + cell - columns + 2, sum);
     sum = std::accumulate(std::cbegin(_board) + cell - 1,
                           std::cbegin(_board) + cell + 2, sum);
   } else if (cell % columns == 0) {
+    // left border
     sum = std::accumulate(std::cbegin(_board) + cell - columns,
                           std::cbegin(_board) + cell - columns + 2, sum);
     sum = std::accumulate(std::cbegin(_board) + cell,
@@ -160,6 +160,7 @@ int GameBoard::borderSum(const unsigned int cell) {
     sum = std::accumulate(std::cbegin(_board) + cell + columns,
                           std::cbegin(_board) + cell + columns + 2, sum);
   } else if (cell < columns) {
+    // upper border
     sum = std::accumulate(std::cbegin(_board) + cell - 1,
                           std::cbegin(_board) + cell + 2, sum);
     sum = std::accumulate(std::cbegin(_board) + cell + decColumns,
@@ -170,11 +171,11 @@ int GameBoard::borderSum(const unsigned int cell) {
 
 int GameBoard::simpleSum(const unsigned int cell) {
   int sum = 0 - _board.at(cell); // we will count ourselves
-  sum = std::accumulate(std::cbegin(_board) + cell - columns - 1,
-                        std::cbegin(_board) + cell - columns + 2, sum);
+  sum = std::accumulate(std::cbegin(_board) + cell - 1 - columns,
+                        std::cbegin(_board) + cell + 2 - columns, sum);
   sum = std::accumulate(std::cbegin(_board) + cell - 1,
                         std::cbegin(_board) + cell + 2, sum);
-  sum = std::accumulate(std::cbegin(_board) + cell + columns - 1,
-                        std::cbegin(_board) + cell + columns + 2, sum);
+  sum = std::accumulate(std::cbegin(_board) + cell - 1 + columns,
+                        std::cbegin(_board) + cell + 2 + columns, sum);
   return sum;
 };

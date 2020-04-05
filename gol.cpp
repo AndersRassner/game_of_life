@@ -36,8 +36,8 @@ int main(int argc, char *argv[]) {
            << endl;
       return 1;
     }
-    unsigned int rows{0};
     unsigned int columns{0};
+    unsigned int rows{0};
     ifs >> columns;
     ifs >> rows;
     GameBoard board{columns, rows};
@@ -49,7 +49,6 @@ int main(int argc, char *argv[]) {
     board.set_state(stateFromFile);
     board.next_board_state();
     board.print();
-    // std::this_thread::sleep_for(2s);
     while (std::chrono::system_clock::now() < (start + 8s)) {
       board.next_board_state();
       board.print();

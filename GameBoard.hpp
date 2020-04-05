@@ -20,7 +20,6 @@ public:
   GameBoard &operator=(const GameBoard &rhs) = default;
 
   void print();
-  void debug_print();
   void next_board_state();
   void set_state(std::vector<int> new_state);
   int getNoCells();
